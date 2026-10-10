@@ -1,13 +1,173 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-    <title>Kelasku - Deteksi Objek</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelasku - AI Object Detection</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Kelasku</h1>
-    <p>AI Object Detection Ruang Kelas</p>
+
+<div class="app">
+
+    <aside class="sidebar">
+        <div class="brand">
+            <span class="brand-icon">🎓</span>
+            <span>Kelasku</span>
+        </div>
+
+        <nav>
+            <a href="#beranda" class="nav-link active">⌂ &nbsp; Beranda</a>
+            <a href="#deteksi" class="nav-link">▦ &nbsp; Deteksi Objek</a>
+            <a href="#riwayat" class="nav-link">◷ &nbsp; Riwayat</a>
+            <a href="#tentang" class="nav-link">ⓘ &nbsp; Tentang</a>
+        </nav>
+
+        <p class="note">
+            Kenali benda di ruang kelas dengan bantuan teknologi AI.
+        </p>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="topbar" id="beranda">
+            <div>
+                <h2>Dashboard</h2>
+                <p>Selamat datang di Kelasku!</p>
+            </div>
+            <span class="status">● Sistem Siap</span>
+        </header>
+
+        <section class="hero">
+            <h1>
+                Kenali Isi Kelasmu dengan
+                <span>AI</span>
+            </h1>
+            <p>
+                Unggah foto ruang kelas dan biarkan kecerdasan buatan
+                mendeteksi berbagai benda, menghitung jumlahnya,
+                serta menampilkan lokasi setiap objek pada gambar.
+            </p>
+            <a href="#deteksi" class="button button-primary">
+                ⬆ Mulai Deteksi
+            </a>
+        </section>
+
+        <section class="stats">
+            <div class="stat-card">
+                <p>Teknologi</p>
+                <h3>YOLO AI</h3>
+            </div>
+            <div class="stat-card">
+                <p>Jenis Objek</p>
+                <h3>Multi-Objek</h3>
+            </div>
+            <div class="stat-card">
+                <p>Status Aplikasi</p>
+                <h3 style="color:#16a34a">Siap Digunakan</h3>
+            </div>
+        </section>
+
+        <section id="deteksi">
+            <h3 class="section-title">Deteksi Objek di Ruang Kelas</h3>
+
+            <div class="content-card">
+                <div class="upload-box">
+                    <h3>📷 Unggah Foto Ruang Kelas</h3>
+                    <p>
+                        Pilih gambar dari perangkatmu untuk melihat
+                        preview sebelum dianalisis.
+                        <br>Format: JPG, JPEG, atau PNG.
+                    </p>
+
+                    <div class="upload-actions">
+                        <label for="imageInput" class="button button-primary">
+                            Pilih Gambar
+                        </label>
+                        <button type="button" class="button button-secondary"
+                                onclick="resetImage()">
+                            Hapus Gambar
+                        </button>
+                    </div>
+
+                    <input type="file" id="imageInput"
+                           accept="image/png,image/jpeg"
+                           hidden>
+
+                    <img id="imagePreview" class="preview"
+                         alt="Preview foto ruang kelas">
+                </div>
+
+                <p class="note">
+                    Catatan: saat ini halaman baru mendukung pemilihan
+                    dan preview gambar. Deteksi AI akan dihubungkan
+                    setelah API backend dan model YOLO siap.
+                </p>
+            </div>
+        </section>
+
+        <section id="riwayat" style="margin-top:25px">
+            <h3 class="section-title">Riwayat Deteksi</h3>
+            <div class="content-card">
+                <p class="note" style="margin-top:0">
+                    Riwayat hasil deteksi akan tersedia setelah
+                    fitur backend dikembangkan.
+                </p>
+            </div>
+        </section>
+
+        <section id="tentang" style="margin-top:25px">
+            <h3 class="section-title">Tentang Kelasku</h3>
+            <div class="content-card">
+                <p>
+                    Kelasku adalah aplikasi berbasis computer vision
+                    untuk mendeteksi dan menghitung benda-benda
+                    di ruang kelas melalui foto.
+                </p>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<script>
+    const imageInput = document.getElementById("imageInput");
+    const imagePreview = document.getElementById("imagePreview");
+
+    imageInput.addEventListener("change", function () {
+        const file = this.files[0];
+
+        if (!file) return;
+
+        if (!file.type.startsWith("image/")) {
+            alert("Pilih file gambar yang valid.");
+            this.value = "";
+            return;
+        }
+
+        if (file.size > 10 * 1024 * 1024) {
+            alert("Ukuran gambar maksimal 10 MB.");
+            this.value = "";
+            return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = function (event) {
+            imagePreview.src = event.target.result;
+            imagePreview.style.display = "block";
+        };
+
+        reader.readAsDataURL(file);
+    });
+
+    function resetImage() {
+        imageInput.value = "";
+        imagePreview.removeAttribute("src");
+        imagePreview.style.display = "none";
+    }
+</script>
+
 </body>
 </html>
