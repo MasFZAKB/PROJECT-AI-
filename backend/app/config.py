@@ -1,9 +1,6 @@
-"""Konfigurasi backend Kelasku (dibaca dari environment / file .env)."""
 from __future__ import annotations
-
 import os
 from pathlib import Path
-
 from dotenv import load_dotenv
 
 BACKEND_DIR = Path(__file__).resolve().parents[1]
@@ -12,13 +9,10 @@ DATASET_DIR = ROOT_DIR / "dataset"
 
 load_dotenv(BACKEND_DIR / ".env")
 
-
 def _path(value: str) -> Path:
     p = Path(value)
     return p if p.is_absolute() else (BACKEND_DIR / p)
 
-
-# Kategori objek yang dirancang di frontend (urutan = class id pada dataset).
 CATEGORIES: list[dict[str, str]] = [
     {"name": "Kursi", "color": "#6478e8"},
     {"name": "Meja", "color": "#d69b42"},
@@ -36,8 +30,6 @@ CATEGORIES: list[dict[str, str]] = [
     {"name": "Gunting", "color": "#d1495b"},
 ]
 
-# Nama kelas bawaan model COCO -> kategori Kelasku. Dipakai saat model
-# kustom belum ada (COCO tidak punya "papan tulis" dan "lemari").
 COCO_ALIASES: dict[str, str] = {
     "chair": "Kursi", "bench": "Kursi", "couch": "Kursi",
     "dining table": "Meja", "desk": "Meja", "table": "Meja",

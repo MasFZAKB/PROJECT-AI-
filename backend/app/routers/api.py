@@ -13,25 +13,20 @@ router = APIRouter(prefix="/api")
 
 ALLOWED_TYPES = {"image/jpeg", "image/png", "image/webp"}
 
-
 def _url(kind: str, filename: str | None) -> str | None:
     return f"/files/{kind}/{filename}" if filename else None
-
 
 @router.get("/health")
 def health():
     return {"status": "ok", "model_loaded": detector.loaded, "model": detector.info()}
 
-
 @router.get("/categories")
 def categories():
     return {"categories": config.CATEGORIES, "model": detector.info()}
 
-
 @router.get("/stats")
 def stats():
     return history.stats()
-
 
 @router.post("/detect", response_model=schemas.DetectResponse)
 def detect(
