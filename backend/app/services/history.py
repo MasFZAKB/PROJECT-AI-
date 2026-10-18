@@ -40,7 +40,6 @@ def init_db() -> None:
             """
         )
 
-
 def add(**row) -> int:
     row["created_at"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
     row["counts"] = json.dumps(row["counts"])
@@ -50,7 +49,6 @@ def add(**row) -> int:
     with _conn() as con:
         cur = con.execute(f"INSERT INTO analyses ({cols}) VALUES ({marks})", list(row.values()))
         return cur.lastrowid
-
 
 def _row(r: sqlite3.Row) -> dict:
     d = dict(r)

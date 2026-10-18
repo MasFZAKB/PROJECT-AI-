@@ -1,10 +1,3 @@
-"""Training YOLO untuk Kelasku.
-
-  python scripts/train.py                      # pakai ../dataset (otomatis siapkan placeholder bila kosong)
-  python scripts/train.py --epochs 100 --model yolov8s.pt --device 0
-
-Hasil terbaik otomatis disalin ke models/best.pt dan langsung dipakai backend.
-"""
 from __future__ import annotations
 
 import argparse
@@ -19,11 +12,9 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 IMG_EXT = {".jpg", ".jpeg", ".png", ".webp"}
 
-
 def has_dataset() -> bool:
     d = DATASET / "images" / "train"
     return d.exists() and any(p.suffix.lower() in IMG_EXT for p in d.iterdir())
-
 
 def main() -> None:
     ap = argparse.ArgumentParser()
@@ -38,9 +29,7 @@ def main() -> None:
     args = ap.parse_args()
 
     import prepare_dataset
-
-    prepare_dataset.write_data_yaml()  # sinkronkan nama kelas dengan backend
-
+    prepare_dataset.write_data_yaml()
     if not has_dataset():
         if args.no_auto_dataset:
             sys.exit("Dataset kosong. Isi dataset/ atau jalankan: python scripts/prepare_dataset.py auto")
@@ -70,7 +59,6 @@ def main() -> None:
         print(f"\nModel disalin ke {target}. Restart backend untuk memakainya.")
     else:
         print("best.pt tidak ditemukan; cek folder runs/kelasku.")
-
 
 if __name__ == "__main__":
     main()

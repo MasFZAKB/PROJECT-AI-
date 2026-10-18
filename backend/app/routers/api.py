@@ -1,14 +1,10 @@
 from __future__ import annotations
-
 import uuid
-
 from fastapi import APIRouter, File, Form, HTTPException, Query, UploadFile
 from PIL import UnidentifiedImageError
-
 from .. import config, schemas
 from ..services import history
 from ..services.detector import detector, draw_detections, load_image
-
 router = APIRouter(prefix="/api")
 
 ALLOWED_TYPES = {"image/jpeg", "image/png", "image/webp"}

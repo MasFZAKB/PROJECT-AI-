@@ -1,9 +1,3 @@
-"""Utilitas dataset Kelasku.
-
-  python scripts/prepare_dataset.py auto            # unduh & siapkan dataset placeholder (COCO128)
-  python scripts/prepare_dataset.py split --src DIR # bagi folder gambar+label menjadi train/val
-  python scripts/prepare_dataset.py check           # validasi struktur & label dataset/
-"""
 from __future__ import annotations
 
 import argparse
@@ -18,11 +12,10 @@ from pathlib import Path
 BACKEND = Path(__file__).resolve().parents[1]
 DATASET = BACKEND.parent / "dataset"
 sys.path.insert(0, str(BACKEND))
-from app.config import CATEGORIES  # noqa: E402
+from app.config import CATEGORIES
 
 IMG_EXT = {".jpg", ".jpeg", ".png", ".webp"}
 COCO128_URL = "https://github.com/ultralytics/assets/releases/download/v0.0.0/coco128.zip"
-# id COCO -> id Kelasku (urutan = CATEGORIES di app/config.py)
 COCO_TO_KELASKU = {
     56: 0, 13: 0,   # chair, bench -> Kursi
     60: 1,          # dining table -> Meja
@@ -38,14 +31,12 @@ COCO_TO_KELASKU = {
     76: 13,         # scissors -> Gunting
 }
 
-
 def write_data_yaml() -> None:
     """Buat dataset/data.yaml dari CATEGORIES agar selalu sinkron dengan backend."""
     DATASET.mkdir(parents=True, exist_ok=True)
     lines = ["path: .", "train: images/train", "val: images/val", "", "names:"]
     lines += [f"  {i}: {c['name']}" for i, c in enumerate(CATEGORIES)]
     (DATASET / "data.yaml").write_text("\n".join(lines) + "\n")
-
 
 def _clear_dataset() -> None:
     write_data_yaml()
@@ -57,7 +48,6 @@ def _clear_dataset() -> None:
             d.mkdir(parents=True)
             (d / ".gitkeep").touch()
 
-
 def _write_pairs(pairs: list[tuple[Path, Path | None]], val_ratio: float, seed: int = 42) -> None:
     random.Random(seed).shuffle(pairs)
     n_val = max(1, int(len(pairs) * val_ratio)) if len(pairs) > 1 else 0
@@ -67,7 +57,6 @@ def _write_pairs(pairs: list[tuple[Path, Path | None]], val_ratio: float, seed: 
         if lbl is not None:
             shutil.copy2(lbl, DATASET / "labels" / split / (img.stem + ".txt"))
     print(f"Selesai: {len(pairs) - n_val} train, {n_val} val -> {DATASET}")
-
 
 def cmd_auto(args: argparse.Namespace) -> None:
     with tempfile.TemporaryDirectory() as tmp:
@@ -99,7 +88,6 @@ def cmd_auto(args: argparse.Namespace) -> None:
         _write_pairs(pairs, args.val_ratio)
     print("CATATAN: ini dataset placeholder dari COCO; Papan tulis & Lemari belum punya contoh.")
 
-
 def cmd_split(args: argparse.Namespace) -> None:
     src = Path(args.src).resolve()
     pairs = []
@@ -113,7 +101,6 @@ def cmd_split(args: argparse.Namespace) -> None:
         sys.exit(f"Tidak ada gambar di {src}")
     _clear_dataset()
     _write_pairs(pairs, args.val_ratio)
-
 
 def cmd_check(_: argparse.Namespace) -> int:
     n_classes = len(CATEGORIES)
@@ -144,7 +131,6 @@ def cmd_check(_: argparse.Namespace) -> int:
     print("\nOK" if not problems else f"\n{problems} masalah ditemukan")
     return 1 if problems else 0
 
-
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -155,7 +141,6 @@ def main() -> None:
     if args.cmd == "check":
         sys.exit(cmd_check(args))
     {"auto": cmd_auto, "split": cmd_split}[args.cmd](args)
-
 
 if __name__ == "__main__":
     main()

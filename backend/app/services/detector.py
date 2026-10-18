@@ -1,16 +1,12 @@
-"""Layanan deteksi objek berbasis YOLO (Ultralytics)."""
 from __future__ import annotations
-
 import io
 import logging
 import threading
 import time
 from dataclasses import dataclass
-
 import cv2
 import numpy as np
 from PIL import Image, ImageOps
-
 from .. import config
 
 log = logging.getLogger("kelasku.detector")
@@ -24,14 +20,10 @@ def to_category(model_class_name: str) -> str | None:
     """Petakan nama kelas model ke kategori Kelasku (None = abaikan)."""
     key = model_class_name.strip().lower().replace("_", " ")
     return _NAME_LOOKUP.get(key) or config.COCO_ALIASES.get(key)
-
-
 def _hex_to_bgr(hex_color: str) -> tuple[int, int, int]:
     h = hex_color.lstrip("#")
     r, g, b = int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
     return b, g, r
-
-
 @dataclass
 class RawDetection:
     label: str
@@ -41,8 +33,6 @@ class RawDetection:
     y1: float
     x2: float
     y2: float
-
-
 class Detector:
     def __init__(self) -> None:
         self._model = None
@@ -50,8 +40,6 @@ class Detector:
         self.mode = "not-loaded"
         self.model_name = ""
         self._class_map: dict[int, str] = {}
-
-    # ------------------------------------------------------------------ load
     def load(self) -> None:
         from ultralytics import YOLO  # import lambat -> ditunda
 
@@ -93,7 +81,6 @@ class Detector:
             ],
         }
 
-    # --------------------------------------------------------------- predict
     def predict(
         self,
         image: Image.Image,
@@ -151,7 +138,6 @@ def draw_detections(image: Image.Image, dets: list[RawDetection]) -> Image.Image
         color = _hex_to_bgr(COLOR_BY_NAME[d.label])
         p1, p2 = (int(d.x1), int(d.y1)), (int(d.x2), int(d.y2))
         cv2.rectangle(canvas, p1, p2, color, thick, cv2.LINE_AA)
-
         text = f"{d.label} {d.confidence:.0%}"
         (tw, th), base = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, scale, 1)
         top = max(p1[1] - th - base - 4, 0)

@@ -1,5 +1,4 @@
 from __future__ import annotations
-
 from pydantic import BaseModel
 
 class BBox(BaseModel):
@@ -24,7 +23,7 @@ class Detection(BaseModel):
     bbox_norm: BBoxNorm
 
 class ModelInfo(BaseModel):
-    mode: str  # "custom" | "pretrained-coco"
+    mode: str
     name: str
     supported_categories: list[str]
     missing_categories: list[str]
